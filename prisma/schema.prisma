@@ -16,6 +16,7 @@ model Users {
     email       String   @unique
     password    String
     phoneNumber String   @unique
+    role Role @default(USER)
     Orders      Orders[]
 }
 
@@ -51,4 +52,9 @@ model OrderProducts {
     product       Products @relation(fields: [productId], references: [id])
 
     @@id([orderId, productId])
+}
+
+enum Role {
+    ADMIN
+    USER
 }
