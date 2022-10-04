@@ -9,13 +9,16 @@ const JWTStrategy = new Strategy(
 	},
 	async (payload, done) => {
 		try {
-			const user = await prisma.users.findUnique({
+			const token = await prisma.tokens.findUnique({
 				where: {
-					id: payload.userId,
+					id: payload.tokenId,
+				},
+				include: {
+					user: true,
 				},
 			});
-			if (user) {
-				return done(null, user);
+			if (token) {
+				return done(null, { ...token.user, tokenId: token.id });
 			} else {
 				return done(null, false);
 			}

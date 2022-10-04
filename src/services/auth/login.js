@@ -20,7 +20,13 @@ export async function login(req, res, next) {
 		if (!isPasswordValid) {
 			return unAuthorizedResponse(res, 'Invalid email or password');
 		}
-		const accessToken = createAccessToken(user.id);
+		const newToken = await prisma.tokens.create({
+			data: {
+				userId: user.id,
+				expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+			},
+		});
+		const accessToken = createAccessToken(user.id, newToken.id);
 		delete user.password;
 		return okResponse(res, 'Login successful', { ...user, accessToken });
 	} catch (err) {

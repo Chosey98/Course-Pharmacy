@@ -33,7 +33,13 @@ export async function register(req, res, next) {
 				phoneNumber,
 			},
 		});
-		const accessToken = createAccessToken(newUser.id);
+		const newToken = await prisma.tokens.create({
+			data: {
+				userId: newUser.id,
+				expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24),
+			},
+		});
+		const accessToken = createAccessToken(newUser.id, newToken.id);
 		delete newUser.password;
 		return okResponse(res, 'User created successfully', {
 			...newUser,
