@@ -4,13 +4,13 @@ import { okResponse } from '../../helpers/functions/ResponseHandler.js';
 export async function createProduct(req, res) {
     try {
         let { role } = req.user;
-        let { name, quantity, catId } = req.body;
+        let { name, quantity, price, catId } = req.body;
         const categoryId = await prisma.category.findUnique({
             where: {
                 id: parseInt(catId),
             }
         });
-        if (!name || !quantity || !catId) {
+        if (!name || !price || !quantity || !catId) {
             return badRequestResponse(res, 'Please fill all fields');
         }
         if (!categoryId) {
@@ -23,6 +23,7 @@ export async function createProduct(req, res) {
             data: {
                 name,
                 quantity,
+                price,
                 categoryId: parseInt(catId),
             }
         });
